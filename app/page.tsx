@@ -1,30 +1,36 @@
-'use client';
-import Todo from './components/Todo';
-import { TodoType } from './types';
-import { useRef } from 'react';
-import { useTodos } from './hooks/useTodos';
-import { API_URL } from '../constants/url';
+"use client";
 
+import Image from "next/image";
+import Todo from "./components/Todo";
+import useSWR from "swr";
+import { useRef, useState } from "react";
+import { TodoType } from "./types";
+import { useTodos } from "./hooks/useTodos";
+import { API_URL } from "@/constants/url";
 
 export default function Home() {
+  // const allTodos = await fetch("API", { cache: "force-cache" });
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { todos, isLoading, error,mutate } = useTodos();
+  const { todos, isLoading, error, mutate } = useTodos();
 
- 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch(`${API_URL}/createTodos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+
+    const response = await fetch(`${API_URL}/createTodo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: inputRef.current?.value,
         isCompleted: false,
       }),
     });
+
     if (response.ok) {
-      const newTodos = await response.json();
-      mutate([...todos, newTodos]);
-      inputRef.current!.value = '';
+      const newTodo = await response.json();
+      mutate([...todos, newTodo]);
+      if (inputRef.current?.value) {
+        inputRef.current.value = "";
+      }
     }
   };
 
@@ -42,8 +48,8 @@ export default function Home() {
         <div className="flex items-center border-b-2 border-teal-500 py-2">
           <input
             className="appearance-none bg-transparent
-      border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight
-      focus:outline-none"
+        border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight
+        focus:outline-none"
             type="text"
             placeholder="Add a task"
             ref={inputRef}
