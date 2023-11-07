@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TodoType } from '../types';
 import { useTodos } from '../hooks/useTodos';
-import { API_URL } from '../../../constants/url';
+import { API_URL } from '../../constants/url';
 
 type TodoProps = {
   todo: TodoType;

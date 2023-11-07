@@ -3,7 +3,7 @@ import Todo from './components/Todo';
 import { TodoType } from './types';
 import { useRef } from 'react';
 import { useTodos } from './hooks/useTodos';
-import { API_URL } from '../../constants/url';
+import { API_URL } from '../constants/url';
 
 
 export default function Home() {
