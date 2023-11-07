@@ -14,7 +14,6 @@ async function fetcher(key: string) {
 const Todo = ({ todo }: TodoProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedTitle, setEditedTitle] = useState<string>(todo.title);
-  const [isTrueFor5Seconds, setIsTrueFor5Seconds] = useState<boolean>(true);
   const { todos, isLoading, error, mutate } = useTodos();
 
   const handleEdit = async () => {
