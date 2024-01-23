@@ -1,15 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Todo from "./components/Todo";
-import useSWR from "swr";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { TodoType } from "./types";
 import { useTodos } from "./hooks/useTodos";
 import { API_URL } from "@/constants/url";
 
 export default function Home() {
-  // const allTodos = await fetch("API", { cache: "force-cache" });
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { todos, isLoading, error, mutate } = useTodos();
 
