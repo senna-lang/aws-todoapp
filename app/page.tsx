@@ -1,33 +1,27 @@
-"use client";
+'use client';
 
-import Todo from "./components/Todo";
-import { useRef } from "react";
-import { TodoType } from "./types";
-import { useTodos } from "./hooks/useTodos";
-import { API_URL } from "@/constants/url";
+import Todo from './components/Todo';
+import { useRef } from 'react';
+import { TodoType } from './types';
+import { useTodos } from './hooks/useTodos';
+import { API_URL } from '@/constants/url';
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { todos, isLoading, error, mutate } = useTodos();
+  const { todos, mutate, listTrigger } = useTodos();
+
+  const data = {
+    title: inputRef.current?.value,
+    isCompleted: false,
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const response = await fetch(`${API_URL}/createTodo`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: inputRef.current?.value,
-        isCompleted: false,
-      }),
-    });
+    listTrigger(data);
 
-    if (response.ok) {
-      const newTodo = await response.json();
-      mutate([...todos, newTodo]);
-      if (inputRef.current?.value) {
-        inputRef.current.value = "";
-      }
+    if (inputRef.current?.value) {
+      inputRef.current.value = '';
     }
   };
 
