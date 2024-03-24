@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { TodoType } from "../types";
-import useSWR from "swr";
-import { useTodos } from "../hooks/useTodos";
-import { API_URL } from "@/constants/url";
+import React, { useState } from 'react';
+import { TodoType } from '../types';
+import useSWR from 'swr';
+import { useTodos } from '../hooks/useTodos';
+import { API_URL } from '@/constants/url';
+import { deleteTodo, editTodo, toggleCompletionTodo } from '../utils/utils';
 
 type TodoProps = {
   todo: TodoType;
@@ -11,53 +12,30 @@ type TodoProps = {
 const Todo = ({ todo }: TodoProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editedTitle, setEditedTitle] = useState<string>(todo.title);
-  const { todos, isLoading, error, mutate } = useTodos();
+  const { todos, mutate } = useTodos();
 
   const handleEdit = async () => {
     setIsEditing(!isEditing);
     if (isEditing) {
-      const response = await fetch(`${API_URL}/editTodo/${todo.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: editedTitle }),
-      });
-
-      if (response.ok) {
-        const editedTodo = await response.json();
-        const updatedTodos = todos.map((todo: TodoType) =>
-          todo.id === editedTodo.id ? editedTodo : todo
-        );
-        mutate(updatedTodos);
+      const response = await editTodo(todo.id);
+      if (response) {
+        mutate();
       }
     }
   };
 
   const handleDelete = async (id: number) => {
-    const response = await fetch(`${API_URL}/deleteTodo/${todo.id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (response.ok) {
-      const deletedTodo = await response.json();
-      const updatedTodos = todos.filter((todo: TodoType) => todo.id !== id);
-      mutate(updatedTodos);
+    const response = await deleteTodo(id);
+    if (response) {
+      mutate();
     }
   };
 
   const toggleTodoCompletion = async (id: number, isCompleted: boolean) => {
-    const response = await fetch(`${API_URL}/editTodo/${todo.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ isCompleted: !isCompleted }),
-    });
+    const response = await toggleCompletionTodo(id, isCompleted);
 
-    if (response.ok) {
-      const editedTodo = await response.json();
-      const updatedTodos = todos.map((todo: TodoType) =>
-        todo.id === editedTodo.id ? editedTodo : todo
-      );
-      mutate(updatedTodos);
+    if (response) {
+      mutate();
     }
   };
 
@@ -80,12 +58,12 @@ const Todo = ({ todo }: TodoProps) => {
                   type="text"
                   className="border rounded py-1 px-2"
                   value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onChange={e => setEditedTitle(e.target.value)}
                 />
               ) : (
                 <span
                   className={`text-lg font-medium mr-2 ${
-                    todo.isCompleted ? "line-through" : ""
+                    todo.isCompleted ? 'line-through' : ''
                   }`}
                 >
                   {todo.title}
@@ -98,7 +76,7 @@ const Todo = ({ todo }: TodoProps) => {
               onClick={handleEdit}
               className="duration-150 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-2 rounded"
             >
-              {isEditing ? "Save" : "✒"}
+              {isEditing ? 'Save' : '✒'}
             </button>
             <button
               onClick={() => handleDelete(todo.id)}
